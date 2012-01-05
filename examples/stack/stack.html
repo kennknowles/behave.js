@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <script src="js/jquery-1.7.1.js"></script>
+    <script src="js/underscore-1.2.4.js"></script>
+    <script src="js/mustache.js"></script>
+    <script src="js/ICanHaz.js"></script>
+    <script src="../../behave.js"></script>
+    <script src="stack.js"></script>
+  </head>
+  <body>
+    <div>
+      <input type="text" id="input">
+      <button type="button" id="push">Push</button>
+      <button type="button" id="pop">Pop</button>
+    </div>
+    <div id="stack">
+      <script type="text/html" id="stack-template">
+	{{#stack}}
+	<span>{{.}}</span>
+	{{/stack}}
+      </script>
+    </div>
+  </body>
+</html>
