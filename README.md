@@ -7,7 +7,10 @@ dynamically typed language (or, if you like, giving up all hope on
 the great semantic work that has been done)
 
 Documentation and clear testing is currently a TODO, but you can
-check out the source (it is very short) or the examples.
+check out the source (it is very short) or the one running
+example:
+
+ * http://kennknowles.github.com/behave.js/examples/stack/stack.html
 
 To read more about other implementations of Functional Reactive Programming:
 
