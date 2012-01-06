@@ -22,6 +22,10 @@
     var root = this; // The page, or whatever
 
     var Be = root.Behave = {}; // The module
+
+    // Functional helpers
+    
+    var constfun = function(val) { return function() { return val; } }
     
     // Event Streams
     // -------------
@@ -95,7 +99,7 @@
     Be.Behavior = function(implementation) {
 	this.changes = implementation.changes
     }
-    _.extend(Be.Behavior, {
+    _.extend(Be.Behavior.prototype, {
 	// functor
 	map: function(f) {
 	    var self = this;
@@ -155,7 +159,7 @@
 	this.set = implementation.set;
 	this.changes = implementation.changes;
     }
-    _.extend(Be.Observable, Be.Behavior, {
+    _.extend(Be.Observable.prototype, Be.Behavior.prototype, {
 	// get followed by set
 	modify: function(f) { this.set(f(this.get())); }
     });
@@ -202,6 +206,35 @@
 	return function(val) {
 	    elem.html(val);
 	}
+    }
+
+    // Adapters
+    // --------
+
+    // Batteries included.
+
+    // backboneE(obj, event) creates an event stream out of the particular event you *could* bind with backbone events
+    Be.backboneE = function(obj, event) {
+	return new Be.EventStream({
+	    subscribe: function(callback) {
+		obj.bind(event, callback);
+		return new Be.Subscription({
+		    unsubscribe: function() {
+			obj.unbind(event, callback);
+		    },
+		});
+	    },
+	});
+    }
+
+    // backboneCollectionB(collection) creates a behavior of the collection object itself
+    Be.backboneCollectionB = function(collection) {
+	var adds = Be.backboneE(collection, "add");
+	var removes = Be.backboneE(collection, "remove");
+	var resets = Be.backboneE(collection, "reset");
+	return new Be.Behavior({
+	    changes: function(options) { return adds.merge(removes).merge(resets).map(constfun(collection)) },
+	});
     }
 
 
