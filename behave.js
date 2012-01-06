@@ -1,27 +1,31 @@
-// behave.js
-// For all details and documentation:
-// http://github.com/kennknowles/behave.js
-// Copyright 2012 Kenneth Knowles
+//     behave.js  
+//     For all details and documentation:
+//     http://github.com/kennknowles/behave.js
+//     Copyright 2012 Kenneth Knowles
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
 
-// behave.js - Lightweight Functional Reactive Programming with Behaviors and Event Streams
-// ----------------------------------------------------------------------------------------
+// Behave.js: Less-than-pure Functional Reactive Programming with Behaviors and Event Streams
+// ------------------------------------------------------------------------------------------
 
 (function() {
     var root = this; // The page, or whatever
 
     var Be = root.Behave = {}; // The module
+
+    // Functional helpers
+    
+    var constfun = function(val) { return function() { return val; } }
     
     // Event Streams
     // -------------
@@ -95,7 +99,7 @@
     Be.Behavior = function(implementation) {
 	this.changes = implementation.changes
     }
-    _.extend(Be.Behavior, {
+    _.extend(Be.Behavior.prototype, {
 	// functor
 	map: function(f) {
 	    var self = this;
@@ -155,7 +159,7 @@
 	this.set = implementation.set;
 	this.changes = implementation.changes;
     }
-    _.extend(Be.Observable, Be.Behavior, {
+    _.extend(Be.Observable.prototype, Be.Behavior.prototype, {
 	// get followed by set
 	modify: function(f) { this.set(f(this.get())); }
     });
@@ -196,12 +200,42 @@
     // -----
 
     // A sink is something that will react by mutating the world, such as the DOM or a Backbone model. I haven't made a class for this
+
     // Sink a = a -> IO ()
 
     Be.domSink = function(elem) {
 	return function(val) {
 	    elem.html(val);
 	}
+    }
+
+    // Adapters
+    // --------
+
+    // Batteries included.
+
+    // backboneE(obj, event) creates an event stream out of the particular event you *could* bind with backbone events
+    Be.backboneE = function(obj, event) {
+	return new Be.EventStream({
+	    subscribe: function(callback) {
+		obj.bind(event, callback);
+		return new Be.Subscription({
+		    unsubscribe: function() {
+			obj.unbind(event, callback);
+		    },
+		});
+	    },
+	});
+    }
+
+    // backboneCollectionB(collection) creates a behavior of the collection object itself
+    Be.backboneCollectionB = function(collection) {
+	var adds = Be.backboneE(collection, "add");
+	var removes = Be.backboneE(collection, "remove");
+	var resets = Be.backboneE(collection, "reset");
+	return new Be.Behavior({
+	    changes: function(options) { return adds.merge(removes).merge(resets).map(constfun(collection)) },
+	});
     }
 
 

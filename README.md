@@ -1,15 +1,26 @@
-Behave.js - lightweight Functional Reactive Programming for Javascript
-======================================================================
 
-Behave.js provides a functional approach to reactive programming in 
-Javascript, taking advantage of Javascript being an already-mutatey,
-dynamically typed language (or, if you like, giving up all hope on
-the great semantic work that has been done)
+           -------------
+==========>| behave.js |=======>
+           -------------
 
-Documentation and clear testing is currently a TODO, but you can
-check out the source (it is very short) or the examples.
+Less-than-pure Functional Reactive Programming for Javascript
+=============================================================
 
-To read more about other implementations of Functional Reactive Programming:
+See the rather immature page with examples:
+ * http://kennknowles.github.com/behave.js
+
+See the annotated source code:
+ * http://kennknowles.github.com/behave.js/docs/behave.html
+
+Read about Functional Reactive Programming:
+ * [Conal Elliott on StackOverflow](http://stackoverflow.com/questions/1028250/what-is-functional-reactive-programming/1030631#1030631)
+ * [Fran](http://conal.net/fran/tutorial.htm)
+ * [Flapjax](http://www.flapjax-lang.org/)
+ * [Push-Pull Functional Reactive Programming](http://conal.net/papers/push-pull-frp/)
+
+Related projects:
+ * [backbone.js](http://documentcloud.github.com/backbone/) - even more useful when wrapped with Behaviors
+ * [knockout.js](http://knockoutjs.com/) - similar ideas lurking under the hood / in the darkness
 
 Copyright & License
 -------------------
