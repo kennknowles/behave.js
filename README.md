@@ -1,10 +1,6 @@
 
-           -------------
-==========>| behave.js |=======>
-           -------------
-
-Less-than-pure Functional Reactive Programming for Javascript
-=============================================================
+behave.js: Less-than-pure Functional Reactive Programming for Javascript
+------------------------------------------------------------------------
 
 See the rather immature page with examples:
  * http://kennknowles.github.com/behave.js
