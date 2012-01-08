@@ -199,13 +199,24 @@
     // Sinks
     // -----
 
-    // A sink is something that will react by mutating the world, such as the DOM or a Backbone model. I haven't made a class for this
+    // A sink is something that will react by mutating the world, such as the DOM or a Backbone model. 
+    // I haven't made a class for this, since it doesn't really have many meaningful combinators...
 
     // Sink a = a -> IO ()
 
+    // A sink which writes the incoming value as the contents of the jquery DOM node
     Be.domSink = function(elem) {
 	return function(val) {
 	    elem.html(val);
+	}
+    }
+
+    // A sink which does knockout-style data-bind for a form. Assumes a backbone-style model object and jquery style elem.
+    Be.formSink = function(elem) {
+	return function(model) {
+	    elem.find('input[data-bind]').each(function(index, input) {
+		$(input).val(model.get($(input).attr('data-bind')));
+	    });
 	}
     }
 
@@ -238,6 +249,12 @@
 	});
     }
 
+    Be.backboneModelB = function(model) {
+	var changes = Be.backboneE(model, "change");
+	return new Be.Behavior({
+	    changes: function(options) { return changes.map(constfun(model)); }
+	});
+    }
 
     // Futures
     // -------
