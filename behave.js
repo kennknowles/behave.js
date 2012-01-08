@@ -238,6 +238,12 @@
 	});
     }
 
+    Be.backboneModelB = function(model) {
+	var changes = Be.backboneE(model, "change");
+	return new Be.Behavior({
+	    changes: function(options) { return changes.map(constfun(model)); }
+	});
+    }
 
     // Futures
     // -------
