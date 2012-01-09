@@ -1,13 +1,94 @@
 <html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <script src="jquery-1.7.1.js" type="application/javascript"></script>
+    <script src="underscore-1.2.4.js" type="application/javascript"></script>
+    <script src="backbone-0.5.3.js" type="application/javascript"></script>
+    <script src="behave.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      $(document).ready(function() {
+
+      // JQuery demo
+      Behave.jqueryInputB($("#jquery-input"))
+            .map(function(val) { return val.toUpperCase(); })
+            .changes()
+            .subscribe(Behave.inputSink($("#jquery-input-sink")));
+
+      // Backbone demo
+      var model = new Backbone.Model({foo: "baz"});
+      Behave.backboneModelB(model)
+            .map(function(currModel)  { return currModel.get("foo"); })
+            .changes()
+            .subscribe(Behave.inputSink($("#backbone-input-sink")));
+      $("#backbone-input").change(function(v) { model.set({"foo": $("#backbone-input").val()}); });
+
+      // Fluent demo
+      Behave.time
+      .map(function(datetime) { return Math.floor(36*Math.abs(Math.sin(datetime.getTime() / 1000.0))); })
+      .changes({pollMillis: 50})
+      .subscribe(function(v) { $("#fluent-sink").attr("style", "font-size: " + v +"pt"); });
+      });
+    </script>
+</head>
 <body>
 <a href="http://github.com/kennknowles/behave.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub"></a>
 
+<p> <img src="arrow.png" width="200" /> </p>
+
 <h1>Behave.js</h1>
 
-Just a placeholder, check out the examples (see their code in the git repo)
-<ul>
-  <li><a href="examples/stack/stack.html">stack</a></li>
-</ul>
+<h2>Less-than-pure Functional Reactive Programming for Javascript</h2>
+
+<p style="font-style: italic">"UI programming is groovy with event streams and behaviors." - me</p>
+
+<p>
+  <table class="contrast">
+    <thead><tr><td>Rather than ...</td><td>why not ...</td></tr></thead>
+    <tbody>
+      <tr>
+	<td>bind a callback to an <em>event</em> and <em>mutating state</em></td>
+	<td>map a function over an <em>event stream</em></td>
+      </tr>
+      <tr>
+	<td>keeping UI details in <em>mutable state</em></td>
+	<td>express your UI's <em>behavior</em> as a function of <em>time</em> and <em>event streams</em></td>
+      </tr>
+    </tbody>
+  </table>
+</p>
+
+<p>Bind jQuery event streams and behaviors.</p>
+
+<pre>
+Behave.jqueryInputB(<input type="text" id="jquery-input" />) 
+      .map(function(val) { return val.toUpperCase(); })
+      .changes()
+      .subscribe(Behave.inputSink(<input type="text" id="jquery-input-sink" disabled="disabled" />));
+</pre>
+
+<p>Bind backbone event streams and behaviors.</p>
+
+<pre>
+var model = new Backbone.Model({foo: "baz"});
+
+Behave.backboneModelB(model)
+      .map(function(currModel) { return currModel.get("foo") })
+      .subscribe(Behave.inputSink(<input type="text" disabled="disabled" id="backbone-input-sink" />));
+
+model.set({"foo" : <input type="text" id="backbone-input" /> });
+</pre>
+
+<p>Polling-based animations use the same API and push-based events.</p>
+
+<pre>
+Behave.time
+      .map(function(dt) { return Math.floor(36*Math.abs(Math.sin(dt.getTime() / 1000.0))); })
+      .changes({pollMillis: 50})
+      .subscribe(function(v) { <span id="fluent-sink">grow</span>.attr("style", "font-size: " + v + "pt"); });
+</pre>
+
+<p>Now head over to <a href="http://github.com/kennknowles/behave.js">the repo on github</a>
+  or read the <a href="docs/behave.html">the annotated source code</a></p>
 
 </body>
 </html>

@@ -72,17 +72,19 @@
     });
     
     // heartbeat :: EventStream () -- no value associated with it so it is time-translation-invariant
-    Be.heartbeat = new Be.EventStream({
-	subscribe: function(millis) {
-	    var id = setInterval(callback, millis);
-	    return new Be.Subscription({
-		cancel: function() { 
-		    clearInterval(id);
-		}
-	    });
-	}
-    });
-
+    Be.heartbeat = function(millis) {
+	return new Be.EventStream({
+	    subscribe: function(callback) {
+		var id = setInterval(callback, millis);
+		return new Be.Subscription({
+		    cancel: function() { 
+			clearInterval(id);
+		    }
+		});
+	    },
+	});
+    }
+    
     // Behaviors
     // ---------
     
@@ -137,16 +139,13 @@
 	    }
 	});
     }
-    
-    // fluent :: IO a -> Behavior a -- behavior that just runs a potentially-mutatey function for a value; appropriate for always-changing behaviors that need polling
-    Be.fluent = function(f) {
-	return new Be.Behavior({
-	    changes: function(options) {
-		return Be.heartbeat(options.pollMillis).map(f);
-	    }
-	});
-    }
 
+    Be.time = new Be.Behavior({
+	changes: function(options) {
+	    return Be.heartbeat(options.pollMillis).map(function () { return new Date(); });
+	},
+    });
+    
     // Observables
     // -----------
 
@@ -211,6 +210,13 @@
 	}
     }
 
+    // Uses jquery, but there's nothing jquery specific about the interface
+    Be.inputSink = function(elem) {
+	return function(v) {
+	    elem.val(v);
+	}
+    }
+
     // A sink which does knockout-style data-bind for a form. Assumes a backbone-style model object and jquery style elem.
     Be.formSink = function(elem) {
 	return function(model) {
@@ -253,6 +259,18 @@
 	var changes = Be.backboneE(model, "change");
 	return new Be.Behavior({
 	    changes: function(options) { return changes.map(constfun(model)); }
+	});
+    }
+
+    // Actually the same
+    Be.jqueryE = Be.backboneE;
+
+    Be.jqueryInputB = function(input) {
+	var changes = Be.jqueryE(input, "keypress")
+            .merge(Be.jqueryE(input, "keyup"))
+            .merge(Be.jqueryE(input, "keydown")); // catch backspace with keyup
+	return new Be.Behavior({
+	    changes: function(options) { return changes.map(function(ev) { return input.val(); }) },
 	});
     }
 
