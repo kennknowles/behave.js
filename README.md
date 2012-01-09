@@ -1,7 +1,7 @@
 
 ## behave.js: Less-than-pure Functional Reactive Programming for Javascript
 
-See the rather immature page with examples:
+See the page with examples:
 
  * http://kennknowles.github.com/behave.js
 
@@ -16,7 +16,7 @@ Read about Functional Reactive Programming:
  * [Flapjax](http://www.flapjax-lang.org/)
  * [Push-Pull Functional Reactive Programming](http://conal.net/papers/push-pull-frp/)
 
-Related projects:
+Read about other projects with event handling:
 
  * [backbone.js](http://documentcloud.github.com/backbone/) - even more useful when wrapped with Behaviors
  * [knockout.js](http://knockoutjs.com/) - similar ideas lurking under the hood / in the darkness
