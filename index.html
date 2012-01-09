@@ -24,7 +24,7 @@
 
       // Fluent demo
       Behave.time
-      .map(function(datetime) { return Math.floor(36*Math.abs(Math.sin(datetime.getTime() / 1000.0))); })
+      .map(function(datetime) { return 36*Math.abs(Math.sin(datetime.getTime() / 1000.0)); })
       .changes({pollMillis: 50})
       .subscribe(function(v) { $("#fluent-sink").attr("style", "font-size: " + v +"pt"); });
       });
@@ -82,7 +82,7 @@ model.set({"foo" : <input type="text" id="backbone-input" /> });
 
 <pre>
 Behave.time
-      .map(function(dt) { return Math.floor(36*Math.abs(Math.sin(dt.getTime() / 1000.0))); })
+      .map(function(dt) { return 36*Math.abs(Math.sin(dt.getTime() / 1000.0)); })
       .changes({pollMillis: 50})
       .subscribe(function(v) { <span id="fluent-sink">grow</span>.attr("style", "font-size: " + v + "pt"); });
 </pre>
